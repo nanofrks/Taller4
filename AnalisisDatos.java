@@ -1,7 +1,6 @@
 import libs.DelayRecord;
 import java.util.ArrayList;
 import edu.princeton.cs.algs4.StdOut;
-import edu.princeton.cs.algs4.Date;
 import edu.princeton.cs.algs4.ST;
 
 public class AnalisisDatos {
@@ -10,39 +9,69 @@ public class AnalisisDatos {
         String filename = "548634059_T_ONTIME_REPORTING.csv";
         ArrayList<DelayRecord> delays = DelayRecord.readCSVFile(filename);
         StdOut.println("Number of records: " + delays.size());
+
+         // Se llama al método meanRouteDelay y se imprime la tabla de símbolos resultante
+         ST<String, Integer> meanDelays = meanRouteDelay(delays);
+         for (String route : meanDelays.keys()) {
+            System.out.println(route + ": " + meanDelays.get(route));
+        }
     }
 
     public static ST<String, Integer> meanRouteDelay(ArrayList<DelayRecord> delays) {
-        ST<String, Integer> resultado = new ST<String, Integer>();
-        int[][] delaySumCuenta = new int[1000][1000];
+        ST<String, Integer> delayTable = new ST<String, Integer>();
+        for (DelayRecord delay : delays){
 
-        for (DelayRecord registro : delays) {
-            String origen = registro.getOrigin();
-            String dest = registro.getDest();
-            int delay = registro.getArrDelay();
-            if (delay > 0) { // Solo se consideran los retrasos positivos
-                int codOrigen = origen.hashCode();
-                int codDest = dest.hashCode();
-                delaySumCuenta[codOrigen][codDest] += delay;
-                delaySumCuenta[codOrigen][codDest + 500] += 1;
+            Integer depdelay, arrdelay, arrdelaynew, carrierdelay, lateaircraftdelay, nasdelay, securitydelay, weatherdelay;
+
+            if(delay.getDepDelay()==null) depdelay = 0; else depdelay = delay.getDepDelay();
+            if(delay.getArrDelay()==null) arrdelay = 0; else arrdelay = delay.getArrDelay();
+            if(delay.getArrDelayNew()==null) arrdelaynew = 0; else arrdelaynew = delay.getArrDelayNew();
+            if(delay.getCarrierDelay()==null) carrierdelay = 0; else carrierdelay = delay.getCarrierDelay();
+            if(delay.getLateAircraftDelay()==null) lateaircraftdelay = 0; else lateaircraftdelay = delay.getLateAircraftDelay();
+            if(delay.getNasDelay()==null) nasdelay = 0; else nasdelay = delay.getNasDelay();
+            if(delay.getSecurityDelay()==null) securitydelay = 0; else securitydelay = delay.getSecurityDelay();
+            if(delay.getWeatherDelay()==null) weatherdelay = 0; else weatherdelay = delay.getWeatherDelay();
+
+            String ruta = delay.getOrigin() +"-"+ delay.getDest();
+            Integer overallDelay = depdelay + arrdelay + arrdelaynew + carrierdelay + lateaircraftdelay + nasdelay + securitydelay + weatherdelay;
+            
+            if(delayTable.get(ruta)==null){
+                delayTable.put(ruta, overallDelay);
+            }else{
+                overallDelay += overallDelay;
+                delayTable.put(ruta, overallDelay);
             }
         }
+        return delayTable;
+        // int[][] delaySumCuenta = new int[1000][1000];
 
-        for (DelayRecord record : delays) {
-            String origin = record.getOrigin();
-            String dest = record.getDest();
-            int originCode = origin.hashCode();
-            int destCode = dest.hashCode();
-            if (delaySumCuenta[originCode][destCode + 500] > 0) {
-                int sum = delaySumCuenta[originCode][destCode];
-                int count = delaySumCuenta[originCode][destCode + 500];
-                int meanDelay = Math.round((float) sum / count);
-                String route = origin + "-" + dest;
-                resultado.put(route, meanDelay);
-            }
-        }
+        // for (DelayRecord registro : delays) {
+        //     String origen = registro.getOrigin();
+        //     String dest = registro.getDest();
+        //     int delay = registro.getArrDelay();
+        //     if (delay > 0) { // Solo se consideran los retrasos positivos
+        //         int codOrigen = origen.hashCode();
+        //         int codDest = dest.hashCode();
+        //         delaySumCuenta[codOrigen][codDest] += delay;
+        //         delaySumCuenta[codOrigen][codDest + 500] += 1;
+        //     }
+        // }
 
-        return resultado;
+        // for (DelayRecord record : delays) {
+        //     String origin = record.getOrigin();
+        //     String dest = record.getDest();
+        //     int originCode = origin.hashCode();
+        //     int destCode = dest.hashCode();
+        //     if (delaySumCuenta[originCode][destCode + 500] > 0) {
+        //         int sum = delaySumCuenta[originCode][destCode];
+        //         int count = delaySumCuenta[originCode][destCode + 500];
+        //         int meanDelay = Math.round((float) sum / count);
+        //         String route = origin + "-" + dest;
+        //         resultado.put(route, meanDelay);
+        //     }
+        // }
+
+        // return resultado;
     }
 
     public static ST<String, Integer> topMDelayed(ST<String, Integer> meanDelayRoute, int m) {
