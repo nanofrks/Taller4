@@ -34,6 +34,216 @@ public class DelayRecord {
     private Integer securityDelay;
     private Integer lateAircraftDelay;
 
+    public int getYear() {
+        return year;
+    }
+
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+
+    public Date getDate() {
+        return date;
+    }
+
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+
+    public String getCarrier() {
+        return carrier;
+    }
+
+
+    public void setCarrier(String carrier) {
+        this.carrier = carrier;
+    }
+
+
+    public int getCarrierId() {
+        return carrierId;
+    }
+
+
+    public void setCarrierId(int carrierId) {
+        this.carrierId = carrierId;
+    }
+
+
+    public int getFlightNumber() {
+        return flightNumber;
+    }
+
+
+    public void setFlightNumber(int flightNumber) {
+        this.flightNumber = flightNumber;
+    }
+
+
+    public int getOriginAirportId() {
+        return originAirportId;
+    }
+
+
+    public void setOriginAirportId(int originAirportId) {
+        this.originAirportId = originAirportId;
+    }
+
+
+    public String getOrigin() {
+        return origin;
+    }
+
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
+    }
+
+
+    public String getOriginCity() {
+        return originCity;
+    }
+
+
+    public void setOriginCity(String originCity) {
+        this.originCity = originCity;
+    }
+
+
+    public String getOriginState() {
+        return originState;
+    }
+
+
+    public void setOriginState(String originState) {
+        this.originState = originState;
+    }
+
+
+    public int getDestAirportId() {
+        return destAirportId;
+    }
+
+
+    public void setDestAirportId(int destAirportId) {
+        this.destAirportId = destAirportId;
+    }
+
+
+    public String getDest() {
+        return dest;
+    }
+
+
+    public void setDest(String dest) {
+        this.dest = dest;
+    }
+
+
+    public String getDestCity() {
+        return destCity;
+    }
+
+
+    public void setDestCity(String destCity) {
+        this.destCity = destCity;
+    }
+
+
+    public String getDestState() {
+        return destState;
+    }
+
+
+    public void setDestState(String destState) {
+        this.destState = destState;
+    }
+
+
+    public Integer getDepDelay() {
+        return depDelay;
+    }
+
+
+    public void setDepDelay(Integer depDelay) {
+        this.depDelay = depDelay;
+    }
+
+
+    public Integer getArrDelay() {
+        return arrDelay;
+    }
+
+
+    public void setArrDelay(Integer arrDelay) {
+        this.arrDelay = arrDelay;
+    }
+
+
+    public Integer getArrDelayNew() {
+        return arrDelayNew;
+    }
+
+
+    public void setArrDelayNew(Integer arrDelayNew) {
+        this.arrDelayNew = arrDelayNew;
+    }
+
+
+    public Integer getCarrierDelay() {
+        return carrierDelay;
+    }
+
+
+    public void setCarrierDelay(Integer carrierDelay) {
+        this.carrierDelay = carrierDelay;
+    }
+
+
+    public Integer getWeatherDelay() {
+        return weatherDelay;
+    }
+
+
+    public void setWeatherDelay(Integer weatherDelay) {
+        this.weatherDelay = weatherDelay;
+    }
+
+
+    public Integer getNasDelay() {
+        return nasDelay;
+    }
+
+
+    public void setNasDelay(Integer nasDelay) {
+        this.nasDelay = nasDelay;
+    }
+
+
+    public Integer getSecurityDelay() {
+        return securityDelay;
+    }
+
+
+    public void setSecurityDelay(Integer securityDelay) {
+        this.securityDelay = securityDelay;
+    }
+
+
+    public Integer getLateAircraftDelay() {
+        return lateAircraftDelay;
+    }
+
+
+    public void setLateAircraftDelay(Integer lateAircraftDelay) {
+        this.lateAircraftDelay = lateAircraftDelay;
+    }
+
+
     // Constructor that initializes all the fields
     public DelayRecord(int year, String date, String carrier, int carrierId, int flightNumber, int originAirportId,
             String origin, String originCity, String originState, int destAirportId, String dest, String destCity,
