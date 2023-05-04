@@ -1,4 +1,6 @@
 import libs.DelayRecord;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.ST;
@@ -19,6 +21,7 @@ public class AnalisisDatos {
 
     public static ST<String, Integer> meanRouteDelay(ArrayList<DelayRecord> delays) {
         ST<String, Integer> delayTable = new ST<String, Integer>();
+        ST<String, Integer> cantvuelos = new ST<String, Integer>();
         for (DelayRecord delay : delays){
 
             Integer depdelay, arrdelay, arrdelaynew, carrierdelay, lateaircraftdelay, nasdelay, securitydelay, weatherdelay;
@@ -34,13 +37,22 @@ public class AnalisisDatos {
 
             String ruta = delay.getOrigin() +"-"+ delay.getDest();
             Integer overallDelay = depdelay + arrdelay + arrdelaynew + carrierdelay + lateaircraftdelay + nasdelay + securitydelay + weatherdelay;
-            
+            Integer count = 1;
+            if(cantvuelos.get(ruta)==null){
+                cantvuelos.put(ruta, count);
+            }else{
+                count++;
+                cantvuelos.put(ruta, count);
+            }
+
             if(delayTable.get(ruta)==null){
                 delayTable.put(ruta, overallDelay);
             }else{
                 overallDelay += overallDelay;
-                delayTable.put(ruta, overallDelay);
+                delayTable.put(ruta, overallDelay/cantvuelos.get(ruta));
             }
+            
+            
         }
         return delayTable;
         // int[][] delaySumCuenta = new int[1000][1000];
