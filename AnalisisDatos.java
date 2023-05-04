@@ -1,8 +1,11 @@
 import libs.DelayRecord;
 
 import java.lang.reflect.Array;
+import java.sql.Date;
 import java.util.ArrayList;
 import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.MaxPQ;
+import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.ST;
 
 public class AnalisisDatos {
@@ -10,13 +13,33 @@ public class AnalisisDatos {
         // Leer el archivo CSV y crear una lista de DelayRecord
         String filename = "548634059_T_ONTIME_REPORTING.csv";
         ArrayList<DelayRecord> delays = DelayRecord.readCSVFile(filename);
-        StdOut.println("Number of records: " + delays.size());
+        StdOut.println("Numero de registros: " + delays.size()+"\n");
 
          // Se llama al método meanRouteDelay y se imprime la tabla de símbolos resultante
+         System.out.println("\n"+"Tiempos medios de retardo: "+"\n");
          ST<String, Integer> meanDelays = meanRouteDelay(delays);
          for (String route : meanDelays.keys()) {
             System.out.println(route + ": " + meanDelays.get(route));
         }
+
+        System.out.println("\n"+"Top M registros: "+"\n");
+        ST<String, Integer> TopM = topMDelayed(meanDelays,20);
+         for (String route : TopM.keys()) {
+            System.out.println(route + ": " + TopM.get(route));
+        }
+
+        System.out.println("\n"+"Tiempos medios de retardo ordenados: "+"\n");
+        listTopMDelayed(TopM);
+         for (String route : TopM.keys()) {
+            System.out.println(route + ": " + TopM.get(route));
+        }
+
+        Date d1 = new Date(2019, 01, 10);
+        Date d2 = new Date(2019, 06, 10);
+        String aerolinaretraso=longestDelayCarrier(delays, d1, d2);
+
+        System.out.println("\n"+"Aerolinea con mayor retraso entre "+d1.toString()+" y "+d2.toString()+" es: "+aerolinaretraso+ "\n");
+
     }
 
     public static ST<String, Integer> meanRouteDelay(ArrayList<DelayRecord> delays) {
@@ -51,65 +74,29 @@ public class AnalisisDatos {
                 overallDelay += overallDelay;
                 delayTable.put(ruta, overallDelay/cantvuelos.get(ruta));
             }
-            
-            
         }
         return delayTable;
-        // int[][] delaySumCuenta = new int[1000][1000];
-
-        // for (DelayRecord registro : delays) {
-        //     String origen = registro.getOrigin();
-        //     String dest = registro.getDest();
-        //     int delay = registro.getArrDelay();
-        //     if (delay > 0) { // Solo se consideran los retrasos positivos
-        //         int codOrigen = origen.hashCode();
-        //         int codDest = dest.hashCode();
-        //         delaySumCuenta[codOrigen][codDest] += delay;
-        //         delaySumCuenta[codOrigen][codDest + 500] += 1;
-        //     }
-        // }
-
-        // for (DelayRecord record : delays) {
-        //     String origin = record.getOrigin();
-        //     String dest = record.getDest();
-        //     int originCode = origin.hashCode();
-        //     int destCode = dest.hashCode();
-        //     if (delaySumCuenta[originCode][destCode + 500] > 0) {
-        //         int sum = delaySumCuenta[originCode][destCode];
-        //         int count = delaySumCuenta[originCode][destCode + 500];
-        //         int meanDelay = Math.round((float) sum / count);
-        //         String route = origin + "-" + dest;
-        //         resultado.put(route, meanDelay);
-        //     }
-        // }
-
-        // return resultado;
     }
 
     public static ST<String, Integer> topMDelayed(ST<String, Integer> meanDelayRoute, int m) {
-        String[] rutas = new String[m];
-        int[] delays = new int[m];
-    
-        int i = 0;
-        for (String ruta : meanDelayRoute.keys()) {
-          int delay = meanDelayRoute.get(ruta);
-          if (i < m || delay > delays[m - 1]) {
-            // Insertar la nueva ruta y su retraso promedio en orden descendente
-            int j = Math.min(i, m - 1);
-            while (j > 0 && delay > delays[j - 1]) {
-              rutas[j] = rutas[j - 1];
-              delays[j] = delays[j - 1];
-              j--;
-            }
-            rutas[j] = ruta;
-            delays[j] = delay;
-            i = Math.min(i + 1, m);
-          }
+      MinPQ<Integer> pq = new MinPQ<Integer>(m+1);
+
+        for (String key : meanDelayRoute.keys()) {
+          pq.insert(meanDelayRoute.get(key));
+          if (pq.size() > m) pq.delMin();
         }
-    
-        ST<String, Integer> topM = new ST<String, Integer>();
-        for (int k = 0; k < i; k++) {
-          topM.put(rutas[k], delays[k]);
+
+        ST<String, Integer> topM = new ST<>();
+
+        while (!pq.isEmpty()){
+          Integer val=pq.delMin();
+          
+          for (String key : meanDelayRoute.keys()){
+            if (val==meanDelayRoute.get(key)){
+              topM.put(key, val);
+            }
+          }
+
         }
         return topM;
       }
