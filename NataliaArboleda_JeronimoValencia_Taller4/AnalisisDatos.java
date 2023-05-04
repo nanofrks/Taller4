@@ -10,6 +10,9 @@ import edu.princeton.cs.algs4.MaxPQ;
 import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.ST;
 
+//Natalia Arboleda Arboleda 000165655
+//Jeronimo Valencia Ospina 000165785
+
 public class AnalisisDatos {
 
   private static SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
