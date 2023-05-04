@@ -1,15 +1,20 @@
 import libs.DelayRecord;
-
 import java.lang.reflect.Array;
-import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.MaxPQ;
 import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.ST;
 
 public class AnalisisDatos {
-    public static void main(String[] args) {
+
+  private static SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+  
+    public static void main(String[] args) throws ParseException {
         // Leer el archivo CSV y crear una lista de DelayRecord
         String filename = "548634059_T_ONTIME_REPORTING.csv";
         ArrayList<DelayRecord> delays = DelayRecord.readCSVFile(filename);
@@ -34,11 +39,11 @@ public class AnalisisDatos {
             System.out.println(route + ": " + TopM.get(route));
         }
 
-        Date d1 = new Date(2019, 01, 10);
-        Date d2 = new Date(2019, 06, 10);
+        Date d1 = df.parse("01/01/2019");
+        Date d2 = df.parse("05/01/2019");
         String aerolinaretraso=longestDelayCarrier(delays, d1, d2);
 
-        System.out.println("\n"+"Aerolinea con mayor retraso entre "+d1.toString()+" y "+d2.toString()+" es: "+aerolinaretraso+ "\n");
+        System.out.println("\n"+"Aerolinea con mayor retraso entre " + d1.toString() + " y " + d2.toString()+ " es: " + aerolinaretraso + "\n");
 
     }
 
@@ -137,23 +142,41 @@ public class AnalisisDatos {
         }
       }
 
-      public static String longestDelayCarrier(ArrayList<DelayRecord> delays, java.util.Date from, java.util.Date to) {
-        int maxDelay = Integer.MIN_VALUE;
-        String aerolineaMaximoDelay = "";
-        int delaySum = 0;
-        int delayCount = 0;
-        for (DelayRecord delay : delays) {
-            if (!delay.getDate().before(from) && !delay.getDate().after(to)) {
-                if (delay.getArrDelayNew() > 0) {
-                    delaySum += delay.getArrDelayNew();
-                    delayCount++;
-                    if (delaySum / delayCount > maxDelay) {
-                        maxDelay = delaySum / delayCount;
-                        aerolineaMaximoDelay = delay.getCarrier();
-                    }
-                }
-            }
+      public static String longestDelayCarrier(ArrayList<DelayRecord> delays, Date from, Date to) {
+        ST<String, Integer> delayTable = new ST<String, Integer>();
+        ST<String, Integer> cantvuelos = new ST<String, Integer>();
+        for (DelayRecord delay : delays){
+            if(delay.getDate().before(to) && delay.getDate().after(from)){
+              Integer depdelay, arrdelay, arrdelaynew, carrierdelay, lateaircraftdelay, nasdelay, securitydelay, weatherdelay;
+
+              if(delay.getDepDelay()==null) depdelay = 0; else depdelay = delay.getDepDelay();
+              if(delay.getArrDelay()==null) arrdelay = 0; else arrdelay = delay.getArrDelay();
+              if(delay.getArrDelayNew()==null) arrdelaynew = 0; else arrdelaynew = delay.getArrDelayNew();
+              if(delay.getCarrierDelay()==null) carrierdelay = 0; else carrierdelay = delay.getCarrierDelay();
+              if(delay.getLateAircraftDelay()==null) lateaircraftdelay = 0; else lateaircraftdelay = delay.getLateAircraftDelay();
+              if(delay.getNasDelay()==null) nasdelay = 0; else nasdelay = delay.getNasDelay();
+              if(delay.getSecurityDelay()==null) securitydelay = 0; else securitydelay = delay.getSecurityDelay();
+              if(delay.getWeatherDelay()==null) weatherdelay = 0; else weatherdelay = delay.getWeatherDelay();
+
+              String maxDelayCarrier = delay.getCarrier();
+              Integer overallDelay = depdelay + arrdelay + arrdelaynew + carrierdelay + lateaircraftdelay + nasdelay + securitydelay + weatherdelay;
+              Integer count = 1;
+              if(cantvuelos.get(maxDelayCarrier)==null){
+                  cantvuelos.put(maxDelayCarrier, count);
+              }else{
+                  count++;
+                  cantvuelos.put(maxDelayCarrier, count);
+              }
+
+              if(delayTable.get(maxDelayCarrier)==null){
+                  delayTable.put(maxDelayCarrier, overallDelay);
+              }else{
+                  overallDelay += overallDelay;
+                  delayTable.put(maxDelayCarrier, overallDelay/cantvuelos.get(maxDelayCarrier));
+              }
+          }
         }
-        return aerolineaMaximoDelay;
+        String maxDelayCarrier = delayTable.max();
+        return maxDelayCarrier;
     }
 }
