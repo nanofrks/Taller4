@@ -74,7 +74,7 @@ public class DelayRecord {
 
 
     // For parsing dates in the format "yyyy-MM-dd"
-    private static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    private static SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 
     
     public static ArrayList<DelayRecord> readCSVFile(String filename) {
@@ -115,7 +115,7 @@ public class DelayRecord {
                 );
                 delays.add(delay);
             } catch (ParseException e) {
-                System.out.println("Error reading line: " + line);
+                System.out.println("Error reading line: " + line + e);
             }
         }
         in.close();
